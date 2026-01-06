@@ -1,0 +1,22 @@
+{{- if and .Values.istio.enabled .Values.istio.gateway.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: {{ .Values.istio.gateway.name | default (printf "%s-gateway" (include "embedding-service.fullname" .)) }}
+  labels:
+    {{- include "embedding-service.labels" . | nindent 4 }}
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    {{- range .Values.istio.gateway.servers }}
+    - port:
+        number: {{ .port.number }}
+        name: {{ .port.name }}
+        protocol: {{ .port.protocol }}
+      hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+    {{- end }}
+{{- end }}

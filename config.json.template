@@ -1,0 +1,26 @@
+{
+  "service": {
+    "host": "0.0.0.0",
+    "port": 8008
+  },
+  "embeddings": {
+    "default_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "allow_model_override": false,
+    "normalize_default": true,
+    "truncate_default": true,
+    "batch_max_texts": 64,s
+    "max_chars_per_text": 8000,
+    "request_timeout_seconds": 60
+  },
+  "observability": {
+    "enabled": true,
+    "service_name": "embedding-service",
+    "exporter": "otlp",
+    "otlp_endpoint": "http://platform-otel-collector:4317",
+    "sampling_ratio": 1.0
+  },
+  "security": {
+    "allowed_origins": ["*"],
+    "request_id_header": "X-Request-ID"
+  }
+}

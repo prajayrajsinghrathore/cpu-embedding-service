@@ -1,0 +1,48 @@
+{{- if and .Values.istio.enabled .Values.istio.virtualService.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "embedding-service.fullname" . }}
+  labels:
+    {{- include "embedding-service.labels" . | nindent 4 }}
+spec:
+  hosts:
+    {{- range .Values.istio.virtualService.hosts }}
+    - {{ . | quote }}
+    {{- end }}
+  {{- if .Values.istio.virtualService.gateways }}
+  gateways:
+    {{- range .Values.istio.virtualService.gateways }}
+    - {{ . | quote }}
+    {{- end }}
+  {{- end }}
+  http:
+    {{- range .Values.istio.virtualService.http }}
+    - match:
+        {{- range .match }}
+        - uri:
+            {{- if .uri.prefix }}
+            prefix: {{ .uri.prefix | quote }}
+            {{- end }}
+            {{- if .uri.exact }}
+            exact: {{ .uri.exact | quote }}
+            {{- end }}
+        {{- end }}
+      route:
+        {{- range .route }}
+        - destination:
+            host: {{ .destination.host | quote }}
+            port:
+              number: {{ .destination.port.number }}
+        {{- end }}
+      {{- if .timeout }}
+      timeout: {{ .timeout }}
+      {{- end }}
+      {{- if .retries }}
+      retries:
+        attempts: {{ .retries.attempts }}
+        perTryTimeout: {{ .retries.perTryTimeout }}
+        retryOn: {{ .retries.retryOn }}
+      {{- end }}
+    {{- end }}
+{{- end }}
