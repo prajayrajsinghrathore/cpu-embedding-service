@@ -1,0 +1,13 @@
+apiVersion: v2
+name: embedding-service
+description: A Helm chart for deploying the embedding-service microservice on AKS with Istio
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - embeddings
+  - ml
+  - sentence-transformers
+  - fastapi
+maintainers:
+  - name: Platform Team

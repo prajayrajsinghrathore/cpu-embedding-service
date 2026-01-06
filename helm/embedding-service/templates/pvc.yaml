@@ -1,0 +1,17 @@
+{{- if and .Values.modelCache.enabled (not .Values.modelCache.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "embedding-service.fullname" . }}-model-cache
+  labels:
+    {{- include "embedding-service.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.modelCache.storageClass }}
+  storageClassName: {{ .Values.modelCache.storageClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.modelCache.size }}
+{{- end }}

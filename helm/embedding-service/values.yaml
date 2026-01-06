@@ -1,0 +1,134 @@
+replicaCount: 1
+
+image:
+  repository: your-registry.azurecr.io/embedding-service
+  pullPolicy: IfNotPresent
+  tag: "1.0.0"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations:
+  sidecar.istio.io/inject: "true"
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
+
+service:
+  type: ClusterIP
+  port: 8008
+
+config:
+  service:
+    host: "0.0.0.0"
+    port: 8008
+  embeddings:
+    defaultModel: "sentence-transformers/all-MiniLM-L6-v2"
+    allowModelOverride: false
+    normalizeDefault: true
+    truncateDefault: true
+    batchMaxTexts: 64
+    maxCharsPerText: 8000
+    requestTimeoutSeconds: 60
+  observability:
+    enabled: false
+    serviceName: "embedding-service"
+    exporter: "otlp"
+    otlpEndpoint: "http://otel-collector.observability.svc.cluster.local:4317"
+    samplingRatio: 1.0
+  security:
+    allowedOrigins:
+      - "*"
+    requestIdHeader: "X-Request-ID"
+
+env: []
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 4Gi
+  requests:
+    cpu: 500m
+    memory: 2Gi
+
+modelCache:
+  enabled: true
+  size: 5Gi
+  storageClass: ""
+  existingClaim: ""
+
+probes:
+  liveness:
+    enabled: true
+    path: /health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readiness:
+    enabled: true
+    path: /ready
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+istio:
+  enabled: true
+  virtualService:
+    enabled: true
+    hosts:
+      - "embedding-service"
+    gateways: []
+    http:
+      - match:
+          - uri:
+              prefix: /
+        route:
+          - destination:
+              host: embedding-service
+              port:
+                number: 8008
+        timeout: 60s
+        retries:
+          attempts: 3
+          perTryTimeout: 20s
+          retryOn: connect-failure,refused-stream,unavailable,cancelled,retriable-4xx
+  gateway:
+    enabled: false
+    name: "embedding-service-gateway"
+    servers:
+      - port:
+          number: 80
+          name: http
+          protocol: HTTP
+        hosts:
+          - "embedding-service.example.com"
