@@ -1,19 +1,18 @@
 from __future__ import annotations
 
 import logging
-import sys
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from embedding_service.api.routes import create_routes
-from embedding_service.config import AppConfig, get_config, validate_config
-from embedding_service.core.logging import setup_logging
-from embedding_service.core.observability import instrument_fastapi, setup_observability
-from embedding_service.core.security import get_allowed_origins
-from embedding_service.engine import EmbeddingEngine, SentenceTransformerEngine
+from cpu_embedding_service.api.routes import create_routes
+from cpu_embedding_service.config import AppConfig, get_config, validate_config
+from cpu_embedding_service.core.logging import setup_logging
+from cpu_embedding_service.core.observability import instrument_fastapi, setup_observability
+from cpu_embedding_service.core.security import get_allowed_origins
+from cpu_embedding_service.engine import EmbeddingEngine, SentenceTransformerEngine
 
 logger = logging.getLogger(__name__)
 

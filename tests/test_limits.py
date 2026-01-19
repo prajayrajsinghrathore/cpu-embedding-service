@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from embedding_service.api.routes import create_routes
-from embedding_service.config import AppConfig, EmbeddingsConfig
+from cpu_embedding_service.api.routes import create_routes
+from cpu_embedding_service.config import AppConfig
 from tests.conftest import MockEmbeddingEngine
 
 
@@ -23,7 +22,7 @@ class TestBatchLimits:
         engine = MockEmbeddingEngine()
         
         app = FastAPI()
-        routes = create_routes(default_config, engine, lambda: default_config)
+        routes = create_routes(default_config, lambda: engine, lambda: default_config)
         app.include_router(routes)
         
         with TestClient(app) as client:
@@ -39,7 +38,7 @@ class TestBatchLimits:
         engine = MockEmbeddingEngine()
         
         app = FastAPI()
-        routes = create_routes(default_config, engine, lambda: default_config)
+        routes = create_routes(default_config, lambda: engine, lambda: default_config)
         app.include_router(routes)
         
         with TestClient(app) as client:
@@ -63,7 +62,7 @@ class TestCharacterLimits:
         engine = MockEmbeddingEngine()
         
         app = FastAPI()
-        routes = create_routes(default_config, engine, lambda: default_config)
+        routes = create_routes(default_config, lambda: engine, lambda: default_config)
         app.include_router(routes)
         
         with TestClient(app) as client:
@@ -80,7 +79,7 @@ class TestCharacterLimits:
         engine = MockEmbeddingEngine()
         
         app = FastAPI()
-        routes = create_routes(default_config, engine, lambda: default_config)
+        routes = create_routes(default_config, lambda: engine, lambda: default_config)
         app.include_router(routes)
         
         with TestClient(app) as client:
@@ -122,7 +121,7 @@ class TestModelOverride:
         engine = MockEmbeddingEngine()
         
         app = FastAPI()
-        routes = create_routes(default_config, engine, lambda: default_config)
+        routes = create_routes(default_config, lambda: engine, lambda: default_config)
         app.include_router(routes)
         
         with TestClient(app) as client:

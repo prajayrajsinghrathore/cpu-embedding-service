@@ -1,5 +1,5 @@
-from embedding_service.api.routes import create_routes, router
-from embedding_service.api.schemas import (
+from cpu_embedding_service.api.routes import create_routes, router
+from cpu_embedding_service.api.schemas import (
     EmbeddingMetadata,
     EmbeddingRequest,
     EmbeddingResponse,

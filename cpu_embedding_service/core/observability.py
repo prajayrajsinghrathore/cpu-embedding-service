@@ -4,7 +4,7 @@ import logging
 from contextlib import contextmanager
 from typing import Any, Dict, Generator, Optional
 
-from embedding_service.config import ObservabilityConfig
+from cpu_embedding_service.config import ObservabilityConfig
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +90,6 @@ def trace_encode_operation(
         return
 
     try:
-        from opentelemetry import trace as otel_trace
 
         with _tracer.start_as_current_span("encode_embeddings") as span:
             span.set_attribute("model.name", model_name)

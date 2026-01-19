@@ -1,11 +1,11 @@
-from embedding_service.core.logging import setup_logging
-from embedding_service.core.observability import (
+from cpu_embedding_service.core.logging import setup_logging
+from cpu_embedding_service.core.observability import (
     add_span_attributes,
     instrument_fastapi,
     setup_observability,
     trace_encode_operation,
 )
-from embedding_service.core.security import (
+from cpu_embedding_service.core.security import (
     InputValidator,
     generate_correlation_id,
     get_allowed_origins,

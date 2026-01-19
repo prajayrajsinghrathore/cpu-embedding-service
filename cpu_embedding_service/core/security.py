@@ -1,14 +1,17 @@
 from __future__ import annotations
 
-import uuid
 from typing import List
 
 from fastapi import Request, Response
 
-from embedding_service.config import EmbeddingsConfig, SecurityConfig
+# Re-export from pilot-common
+
+from cpu_embedding_service.config import EmbeddingsConfig, SecurityConfig
 
 
 def generate_correlation_id() -> str:
+    """Generate a new correlation ID using pilot-common."""
+    import uuid
     return str(uuid.uuid4())
 
 

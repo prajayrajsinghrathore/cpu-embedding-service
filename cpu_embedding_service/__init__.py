@@ -1,4 +1,4 @@
-from embedding_service.app import app, create_app
+from cpu_embedding_service.app import app, create_app
 
 __version__ = "1.0.0"
 

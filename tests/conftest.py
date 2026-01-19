@@ -1,21 +1,20 @@
 from __future__ import annotations
 
 from typing import Generator, List
-from unittest.mock import MagicMock
 
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from embedding_service.api.routes import create_routes
-from embedding_service.config import (
+from cpu_embedding_service.api.routes import create_routes
+from cpu_embedding_service.config import (
     AppConfig,
     EmbeddingsConfig,
     ObservabilityConfig,
     SecurityConfig,
     ServiceConfig,
 )
-from embedding_service.engine.base import EmbeddingEngine
+from cpu_embedding_service.engine.base import EmbeddingEngine
 
 
 class MockEmbeddingEngine(EmbeddingEngine):
@@ -85,7 +84,7 @@ def failing_engine() -> MockEmbeddingEngine:
 @pytest.fixture
 def test_app(default_config: AppConfig, mock_engine: MockEmbeddingEngine) -> FastAPI:
     app = FastAPI()
-    routes = create_routes(default_config, mock_engine, lambda: default_config)
+    routes = create_routes(default_config, lambda: mock_engine, lambda: default_config)
     app.include_router(routes)
     return app
 
@@ -99,7 +98,7 @@ def client(test_app: FastAPI) -> Generator[TestClient, None, None]:
 @pytest.fixture
 def failing_app(default_config: AppConfig, failing_engine: MockEmbeddingEngine) -> FastAPI:
     app = FastAPI()
-    routes = create_routes(default_config, failing_engine, lambda: default_config)
+    routes = create_routes(default_config, lambda: failing_engine, lambda: default_config)
     app.include_router(routes)
     return app
 

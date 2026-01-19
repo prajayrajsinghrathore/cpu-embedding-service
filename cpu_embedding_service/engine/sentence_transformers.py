@@ -6,7 +6,7 @@ from typing import Dict, List, Optional
 
 from sentence_transformers import SentenceTransformer
 
-from embedding_service.engine.base import EmbeddingEngine
+from cpu_embedding_service.engine.base import EmbeddingEngine
 
 logger = logging.getLogger(__name__)
 

@@ -4,9 +4,9 @@ import logging
 import time
 from typing import Callable
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, HTTPException, Request, Response
 
-from embedding_service.api.schemas import (
+from cpu_embedding_service.api.schemas import (
     EmbeddingRequest,
     EmbeddingResponse,
     ErrorDetail,
@@ -15,14 +15,14 @@ from embedding_service.api.schemas import (
     ReadyResponse,
     UsageStats,
 )
-from embedding_service.config import AppConfig, validate_config
-from embedding_service.core.observability import add_span_attributes, trace_encode_operation
-from embedding_service.core.security import (
+from cpu_embedding_service.config import AppConfig, validate_config
+from cpu_embedding_service.core.observability import add_span_attributes, trace_encode_operation
+from cpu_embedding_service.core.security import (
     InputValidator,
     get_correlation_id,
     set_correlation_id_header,
 )
-from embedding_service.engine.base import EmbeddingEngine
+from cpu_embedding_service.engine.base import EmbeddingEngine
 
 logger = logging.getLogger(__name__)
 
@@ -105,7 +105,7 @@ def create_routes(
         if body.model and body.model != eng.get_model_name():
             try:
                 eng.load_model(body.model)
-            except Exception as e:
+            except Exception:
                 logger.error(
                     "Failed to load requested model",
                     extra={**log_extra, "requested_model": body.model}

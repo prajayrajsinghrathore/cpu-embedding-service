@@ -7,7 +7,7 @@ import tempfile
 import pytest
 from pydantic import ValidationError
 
-from embedding_service.config import (
+from cpu_embedding_service.config import (
     AppConfig,
     EmbeddingsConfig,
     ObservabilityConfig,

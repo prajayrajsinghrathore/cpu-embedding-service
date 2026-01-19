@@ -14,7 +14,7 @@ COPY pyproject.toml poetry.lock* ./
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi --no-dev --no-root
 
-COPY src/ ./src/
+COPY cpu_embedding_service/ ./cpu_embedding_service/
 
 RUN poetry install --no-interaction --no-ansi --no-dev
 
@@ -30,9 +30,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
-COPY --from=builder /app/src /app/src
+COPY --from=builder /app/cpu_embedding_service /app/cpu_embedding_service
 
-ENV PYTHONPATH=/app/src \
+ENV PYTHONPATH=/app \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     CUDA_VISIBLE_DEVICES="" \
@@ -50,4 +50,4 @@ EXPOSE 8008
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8008/health')" || exit 1
 
-CMD ["uvicorn", "embedding_service.app:app", "--host", "0.0.0.0", "--port", "8008"]
+CMD ["uvicorn", "cpu_embedding_service.app:app", "--host", "0.0.0.0", "--port", "8008"]
